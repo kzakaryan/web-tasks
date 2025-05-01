@@ -3,6 +3,7 @@ package com.bobocode.dao.impl;
 import com.bobocode.dao.AccountDao;
 import com.bobocode.exception.EntityNotFountException;
 import com.bobocode.model.Account;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@link AccountDao} implementation that is based on {@link java.util.HashMap}.
- * <p>
- * todo: 1. Configure a component with name "accountDao"
+ * InMemory implementation of {@link AccountDao} using {@link java.util.HashMap}.
  */
+@Component("accountDao") // Marked as a Spring component
 public class InMemoryAccountDao implements AccountDao {
+
     private Map<Long, Account> accountMap = new HashMap<>();
     private long idSequence = 1L;
 

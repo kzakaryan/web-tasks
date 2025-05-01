@@ -9,16 +9,9 @@ import java.net.Socket;
 import static com.bobocode.net.client.ClientUtil.*;
 
 /**
- * {@link MessageBoardClient} is a client app that allows connecting to the {@link MessageBoardServer} in order to send
- * a message. This app reads a message from the console, connects to the server socket and sends a message writing
- * data to the output stream. The message then will be printed on the {@link MessageBoardServer} side. The app will
- * ask user to type message infinitely, until the user enters `q`.
- * <p>
- * PLEASE MAKE SURE THAT {@link MessageBoardServer} is running before using the client app.
- * <p>
- * If you have another machine, you can try to run {@link MessageBoardServer} on that machine. In order to do that, you
- * need to make sure that you can find that machine by IP address, and the port you want to use is exposed properly.
- * If so, you will need to specify corresponding HOST and POST values below.
+ * MessageBoardClient is a client application that connects to the MessageBoardServer
+ * and sends messages. It will continuously ask for user input and send the message to the server.
+ * The client will exit if the user enters 'q'.
  */
 public class MessageBoardClient {
     private static final String SERVER_ADDRESS = MessageBoardServer.HOST;
@@ -32,9 +25,13 @@ public class MessageBoardClient {
             while (!message.equals("q")) {
                 try (Socket socket = openSocket(SERVER_ADDRESS, SERVER_PORT)) {
                     writeToSocket(message, socket);
+                } catch (Exception e) {
+                    System.err.println("Error connecting to server: " + e.getMessage());
                 }
-                message = readMessage(reader);
+                message = readMessage(reader); // Get new message from user
             }
+
+            System.out.println("Disconnected from the server.");
         }
     }
 }

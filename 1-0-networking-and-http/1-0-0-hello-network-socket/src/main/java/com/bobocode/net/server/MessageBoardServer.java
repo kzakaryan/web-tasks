@@ -7,12 +7,8 @@ import java.net.Socket;
 import static com.bobocode.net.server.ServerUtil.*;
 
 /**
- * {@link MessageBoardServer} is a server application that allows clients to connect via socket and print a message.
- * It opens a server socket on a given port and waits for a client to connect using a infinite loop. Once client is
- * connected this app reads a message from the connected socket input stream and prints it to the console.
- * <p>
- * It uses only one thread. So if multiple clients will try to connect at the same time, they will be waiting and will
- * be processed one by one.
+ * MessageBoardServer is a server application that allows clients to connect via socket
+ * and prints messages from each client. It uses a new thread for each client to support multiple clients.
  */
 public class MessageBoardServer {
     public static final String HOST = ServerUtil.getLocalHost();
@@ -20,10 +16,40 @@ public class MessageBoardServer {
 
     public static void main(String[] args) throws IOException {
         try (ServerSocket serverSocket = createServerSocket(PORT)) {
+            System.out.println("Server is running...");
             while (true) {
-                try (Socket clientSocket = acceptClientSocket(serverSocket)) {
-                    String message = readMessageFromSocket(clientSocket);
-                    printMessage(clientSocket, message);
+                try {
+                    Socket clientSocket = acceptClientSocket(serverSocket);
+                    new Thread(new ClientHandler(clientSocket)).start(); // Handle each client in a new thread
+                } catch (Exception e) {
+                    System.err.println("Error accepting client connection: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * ClientHandler handles the message reading and printing for a single client.
+     */
+    static class ClientHandler implements Runnable {
+        private final Socket clientSocket;
+
+        public ClientHandler(Socket clientSocket) {
+            this.clientSocket = clientSocket;
+        }
+
+        @Override
+        public void run() {
+            try {
+                String message = readMessageFromSocket(clientSocket);
+                printMessage(clientSocket, message);
+            } catch (Exception e) {
+                System.err.println("Error reading from client: " + e.getMessage());
+            } finally {
+                try {
+                    clientSocket.close(); // Close the socket after handling the client
+                } catch (IOException e) {
+                    System.err.println("Error closing client socket: " + e.getMessage());
                 }
             }
         }

@@ -8,11 +8,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  * This class provides web (servlet) related configuration. In the Web MVC framework,
  * each DispatcherServlet has its own WebApplicationContext, which inherits all the beans already defined
  * in the root ApplicationContext.
- * <p>
- * todo: mark this class as Spring config class
- * todo: enable web mvc using annotation
- * todo: enable component scanning for package "web"
  */
-
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "com.bobocode.web") // Enable component scanning for the "web" package
 public class WebConfig {
+    // Web configuration enabling Spring Web MVC and component scanning for web-related beans
 }

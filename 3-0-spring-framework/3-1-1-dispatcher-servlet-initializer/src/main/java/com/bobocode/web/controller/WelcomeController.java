@@ -1,16 +1,21 @@
 package com.bobocode.web.controller;
 
-/**
- * Welcome controller that consists of one method that handles get request to "/welcome" and respond with a message.
- * <p>
- * todo: mark this class as Spring controller
- * todo: configure HTTP GET mapping "/welcome" for method {@link WelcomeController#welcome()}
- * todo: tell Spring that {@link WelcomeController#welcome()} method provides response body without view
- */
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * Welcome controller that handles the GET request to "/welcome" and responds with a message.
+ */
+@Controller
 public class WelcomeController {
 
+    /**
+     * Handles the GET request to "/welcome" and returns a simple message.
+     *
+     * @return the welcome message
+     */
+    @GetMapping("/welcome")
     public String welcome() {
-        return "Welcome to Spring MVC!";
+        return "Welcome to Spring MVC!"; // Response body without using a view
     }
 }
